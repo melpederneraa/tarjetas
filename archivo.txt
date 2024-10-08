@@ -1,0 +1,4 @@
+codigo,propietario,saldo
+1,1,0
+2,2,500
+3,2,900

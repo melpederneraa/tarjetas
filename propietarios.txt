@@ -1,0 +1,4 @@
+codigo,nombre,telefono
+1,Soledad1,11111
+2,Soledad2,22222
+3,Soledad3,33333
