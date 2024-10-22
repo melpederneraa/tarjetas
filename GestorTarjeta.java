@@ -1,66 +1,107 @@
 package org.example.Gestores;
 
-import org.example.Modelos.Tarjeta;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.example.Modelos.Tarjeta;
 
 public class GestorTarjeta {
-    private ArrayList<Tarjeta> tarjetas = new ArrayList<>();
-    private GestorPropietario gestorP;
+   private ArrayList<Tarjeta> tarjetas = new ArrayList();
+   private GestorPropietario gestorP;
 
-    public GestorPropietario getGestorP() {
-        return gestorP;
-    }
+   public GestorTarjeta() {
+   }
 
-    public void setGestorP(GestorPropietario gestorP) {
-        this.gestorP = gestorP;
-    }
+   public GestorPropietario getGestorP() {
+      return this.gestorP;
+   }
 
-    public ArrayList<Tarjeta> getTarjetas() {
-        return tarjetas;
-    }
+   public void setGestorP(GestorPropietario gestorP) {
+      this.gestorP = gestorP;
+   }
 
-    public void setTarjetas(ArrayList<Tarjeta> tarjetas) {
-        this.tarjetas = tarjetas;
-    }
+   public ArrayList<Tarjeta> getTarjetas() {
+      return this.tarjetas;
+   }
 
-    public void cargarTarjetasDesdeArchivo(){
-        try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Usuario\\Documents\\UTN-FRVM\\Paradigma\\CodigoC2\\TarjetaGamer\\src\\main\\java\\org\\example\\archivo.txt"))) {
+   public void setTarjetas(ArrayList<Tarjeta> tarjetas) {
+      this.tarjetas = tarjetas;
+   }
+
+   public void cargarTarjetasDesdeArchivo() {
+      try {
+         BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\milag\\OneDrive\\Desktop\\example\\archivo.txt"));
+
+         try {
+            br.readLine();
+
             String linea;
-            br.readLine();//linea de titulos, si la tengo, de esta manera la leo pero no la utilizo
-            while ((linea = br.readLine()) != null) {//mientras haya una linea mas en el archivo
-                String[] datos = linea.split(","); //tomo los datos
-
-                if (datos.length == 3) {
-                    String numero = datos[0].trim();
-                    int codigoPropietarios = Integer.parseInt(datos[1].trim());
-                    double saldo = Double.parseDouble(datos[2].trim());
-
-                    Tarjeta tarjeta = new Tarjeta();
-                    tarjeta.setCodigo(Integer.parseInt(numero));
-                    tarjeta.setPropietario(gestorP.buscarPropietario(codigoPropietarios));
-                    tarjeta.setSaldo(saldo);
-                    tarjetas.add(tarjeta);
-                }
+            while((linea = br.readLine()) != null) {
+               String[] datos = linea.split(",");
+               if (datos.length == 3) {
+                  String numero = datos[0].trim();
+                  int codigoPropietarios = Integer.parseInt(datos[1].trim());
+                  double saldo = Double.parseDouble(datos[2].trim());
+                  Tarjeta tarjeta = new Tarjeta();
+                  tarjeta.setCodigo(Integer.parseInt(numero));
+                  tarjeta.setPropietario(this.gestorP.buscarPropietario(codigoPropietarios));
+                  tarjeta.setSaldo(saldo);
+                  this.tarjetas.add(tarjeta);
+               }
             }
-        } catch (IOException e) {
-            System.out.println("Error al leer el archivo: " + e.getMessage());
-        }
-
-        System.out.println(tarjetas);
-    }
-
-    public String listadoTelefonosSinSaldo(){
-        String telefono="";
-        for (Tarjeta t: tarjetas){
-            if(t.getSaldo()<=0){
-                telefono = telefono + t.getPropietario().getTelefono();
+         } catch (Throwable var10) {
+            try {
+               br.close();
+            } catch (Throwable var9) {
+               var10.addSuppressed(var9);
             }
-        }
-        return telefono;
-    }
 
+            throw var10;
+         }
+
+         br.close();
+      } catch (IOException var11) {
+         System.out.println("Error al leer el archivo: " + var11.getMessage());
+      }
+
+      System.out.println(this.tarjetas);
+   }
+
+   public String listadoTelefonosSinSaldo() {
+      String telefono = "";
+      Iterator var2 = this.tarjetas.iterator();
+
+      while(var2.hasNext()) {
+         Tarjeta t = (Tarjeta)var2.next();
+         if (t.getSaldo() <= 0.0 && t.getPropietario() != null) {
+            telefono = telefono + t.getPropietario().getTelefono() + "\n";
+         }
+      }
+
+      return telefono;
+   }
+
+   public List<String> generarRankingSimple() {
+      List<String> ranking = new ArrayList();
+      List<String> propietariosYaContados = new ArrayList();
+      Iterator var3 = this.tarjetas.iterator();
+
+      while(var3.hasNext()) {
+         Tarjeta tarjeta = (Tarjeta)var3.next();
+         if (tarjeta.getSaldo() > 1000.0) {
+            String propietarioNombre = tarjeta.getPropietario().getNombre();
+            int var10000 = tarjeta.getPropietario().getCodigo();
+            String rankingEntry = "Propietario ID: " + var10000 + " | Tarjeta ID: " + tarjeta.getCodigo() + " | Saldo: $" + tarjeta.getSaldo();
+            if (!propietariosYaContados.contains(propietarioNombre)) {
+               ranking.add(rankingEntry);
+               propietariosYaContados.add(propietarioNombre);
+            }
+         }
+      }
+
+      return ranking;
+   }
 }
