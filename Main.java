@@ -1,25 +1,29 @@
 package org.example;
 
+import java.util.Iterator;
+import java.util.List;
 import org.example.Gestores.GestorPropietario;
 import org.example.Gestores.GestorTarjeta;
-import org.example.Modelos.Tarjeta;
-
-import java.io.*;
-import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) {
-        GestorPropietario gestorP=new GestorPropietario();
-        gestorP.cargarPropietariosDesdeArchivo();
+   public Main() {
+   }
 
-        GestorTarjeta gestorT = new GestorTarjeta();
-        gestorT.setGestorP(gestorP);
-        gestorT.cargarTarjetasDesdeArchivo();
+   public static void main(String[] args) {
+      GestorPropietario gestorP = new GestorPropietario();
+      gestorP.cargarPropietariosDesdeArchivo();
+      GestorTarjeta gestorT = new GestorTarjeta();
+      gestorT.setGestorP(gestorP);
+      gestorT.cargarTarjetasDesdeArchivo();
+      System.out.println(gestorT.listadoTelefonosSinSaldo());
+      List<String> ranking = gestorT.generarRankingSimple();
+      System.out.println("Ranking de Vendedores:");
+      Iterator var4 = ranking.iterator();
 
-        System.out.println(gestorT.listadoTelefonosSinSaldo());
+      while(var4.hasNext()) {
+         String r = (String)var4.next();
+         System.out.println(r);
+      }
 
-
-      // Tarjeta tarjeta1=new Tarjeta(1,"Sole",1500);
-      // System.out.println(tarjeta1);
-    }
+   }
 }
